@@ -1,0 +1,39 @@
+# usermod -aG wheel jasper
+# echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
+
+yes | sudo pacman -Syu
+
+sudo pacman -S --needed xorg sddm plasma packagekit-qt5 dolphin konsole spectacle ufw code gimp nodejs git qbittorrent fish
+# opera clamav rkhunter bluedevil
+
+sudo systemctl enable sddm
+sudo systemctl enable NetworkManager
+sudo ufw enable
+sudo chsh -s /bin/fish
+
+PS3='Please select a graphics driver: '
+options=("Fermi Nvidia drivers (5xx series)" "Standard Nvidia drivers (10xx series or under)" "None")
+select opt in "${options[@]}"
+do
+    case $REPLY in
+        "1")
+            git clone https://aur.archlinux.org/nvidia-390xx-utils.git
+            cd nvidia-390xx-utils
+            makepkg -si
+            cd ..
+            rm -r -f nvidia-390xx-utils
+            break
+            ;;
+        "2")
+            pacman -S nvidia
+            ;;
+        "3")
+            break
+            ;;
+        *) echo "invalid option $REPLY";;
+    esac
+done
+
+echo "Rebooting in 4 seconds..."
+sleep 4
+reboot
