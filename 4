@@ -12,7 +12,7 @@ sudo ufw enable
 sudo chsh -s /bin/fish
 
 PS3='Please select a graphics driver: '
-options=("Fermi Nvidia drivers (5xx series)" "Standard Nvidia drivers (10xx series or under)" "None")
+options=("Fermi Nvidia drivers (5xx series)" "Nvidia Pascal Beta drivers" "Standard Nvidia drivers (10xx series or under)" "None")
 select opt in "${options[@]}"
 do
     case $REPLY in
@@ -25,10 +25,18 @@ do
             break
             ;;
         "2")
-            sudo pacman -S nvidia
+            git clone https://aur.archlinux.org/nvidia-beta.git
+            cd nvidia-beta
+            makepkg -si
+            cd ..
+            rm -r -f nvidia-beta
             break
             ;;
         "3")
+            sudo pacman -S nvidia
+            break
+            ;;
+        "4")
             break
             ;;
         *) echo "invalid option $REPLY";;
